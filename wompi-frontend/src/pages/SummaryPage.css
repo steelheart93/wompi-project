@@ -1,0 +1,36 @@
+.summary-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: sans-serif;
+  color: #333;
+}
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #eee;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+.confirm-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  margin-top: 30px;
+  cursor: pointer;
+}
+.confirm-btn:disabled {
+  background-color: #95a5a6;
+}
