@@ -3,7 +3,7 @@ services:
   - type: web
     name: wompi-backend
     env: node
-    plan: free
+    # Borramos la línea de plan aquí
     rootDir: wompi-backend
     buildCommand: npm install && npm run build
     startCommand: npm run start:prod
@@ -19,18 +19,17 @@ services:
   - type: web
     name: wompi-frontend
     env: static
-    plan: free
+    # Borramos la línea de plan aquí
     rootDir: wompi-frontend
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:
-      # 🚨 CAMBIO AQUÍ: Escribimos la URL proyectada de Render
       - key: VITE_API_URL
         value: https://wompi-backend.onrender.com
 
 databases:
   # 3. LA BASE DE DATOS
   - name: wompi-db
-    plan: free
+    plan: free # La base de datos sí requiere especificar el plan
     databaseName: wompi
     user: wompi
