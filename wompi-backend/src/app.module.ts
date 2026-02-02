@@ -16,13 +16,20 @@ import { WompiAdapter } from './infrastructure/adapters/wompi.adapter';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'wompi_user',
-      password: 'wompi_password',
-      database: 'wompi_db',
+      // 👇 Si existe DATABASE_URL (Render), la usa. Si no, usa los datos locales.
+      url: process.env.DATABASE_URL,
+
+      // Mantenemos estos por si corres el proyecto local sin Docker
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USERNAME || 'wompi_user',
+      password: process.env.DB_PASSWORD || 'wompi_password',
+      database: process.env.DB_DATABASE || 'wompi_db',
+
       entities: [ProductEntity, TransactionEntity],
-      synchronize: true, // ¡SOLO EN DESARROLLO! Crea las tablas automágicamente
+      synchronize: true,
+      // Importante para conexiones en la nube (Render lo requiere a veces)
+      ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
     }),
     TypeOrmModule.forFeature([ProductEntity, TransactionEntity]),
   ],
