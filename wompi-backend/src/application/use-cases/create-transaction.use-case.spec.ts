@@ -59,6 +59,7 @@ describe('CreateTransactionUseCase', () => {
       paymentSourceId: 123,
       installments: 1,
       deliveryAddress: 'Calle Falsa',
+      vatFee: 190, // Simulamos un IVA de 190 (19% de 1000)
     });
 
     // 3. Assert (Verificar)
@@ -79,6 +80,7 @@ describe('CreateTransactionUseCase', () => {
       paymentSourceId: 123,
       installments: 1,
       deliveryAddress: 'Calle Falsa',
+      vatFee: 190, // Simulamos un IVA de 190 (19% de 1000)
     });
 
     // 3. Assert

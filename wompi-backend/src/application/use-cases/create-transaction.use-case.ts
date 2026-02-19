@@ -17,6 +17,7 @@ export interface CreateTransactionDto {
   paymentSourceId: number; // Token de la tarjeta
   installments: number;
   deliveryAddress: string; // Aunque no lo guardemos en Transaction por ahora, es parte del requerimiento
+  vatFee: number; // Nuevo campo para el IVA
 }
 
 @Injectable()
@@ -40,15 +41,18 @@ export class CreateTransactionUseCase {
 
     const product = productResult.value;
     if (!product.hasStock(1)) {
-      // Asumimos compra de 1 unidad por simplicidad
       return failure(new Error('Insufficient stock'));
     }
 
-    // 2. Calcular Total (Precio + Envío)
-    const totalAmount = product.price + this.DELIVERY_FEE;
-    const reference = `ORD-${uuidv4().split('-')[0]}-${Date.now()}`; // Ej: ORD-a1b2-170000000
+    // 2. NUEVO: Calcular IVA (19%) y Total Actualizado
+    // Calculamos el 19% sobre el precio del producto
+    const vatFee = Math.round(product.price * 0.19);
+    // El total ahora incluye: Precio + Envío + IVA
+    const totalAmount = product.price + this.DELIVERY_FEE + vatFee;
 
-    // 3. Crear Transacción PENDIENTE
+    const reference = `ORD-${uuidv4().split('-')[0]}-${Date.now()}`;
+
+    // 3. Crear Transacción PENDIENTE (Agregamos el vatFee al objeto)
     const newTransaction = new Transaction(
       uuidv4(),
       reference,
@@ -58,6 +62,7 @@ export class CreateTransactionUseCase {
       dto.customerEmail,
       'PENDING',
       new Date(),
+      vatFee, // <--- NUEVO: Guardamos el valor del IVA en la transacción
     );
 
     // Guardamos estado inicial
@@ -65,7 +70,7 @@ export class CreateTransactionUseCase {
     if (!saveResult.success)
       return failure(new Error('Could not create transaction record'));
 
-    // 4. Intentar Cobrar con Wompi
+    // 4. Intentar Cobrar con Wompi (Enviamos el total que ya incluye el IVA)
     const paymentResult = await this.paymentGateway.processPayment({
       amountInCents: totalAmount,
       currency: 'COP',

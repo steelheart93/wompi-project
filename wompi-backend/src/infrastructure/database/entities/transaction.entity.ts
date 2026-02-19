@@ -29,6 +29,9 @@ export class TransactionEntity {
   @Column()
   status: string;
 
+  @Column({ type: 'bigint', name: 'vat_fee', default: 0 })
+  vatFee: number;
+
   @Column()
   created_at: Date;
 }

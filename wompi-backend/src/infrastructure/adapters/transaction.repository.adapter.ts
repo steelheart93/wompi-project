@@ -25,6 +25,7 @@ export class TransactionRepositoryAdapter implements ITransactionRepository {
       entity.customer_email,
       entity.status as any,
       entity.created_at,
+      entity.vatFee, // <--- NUEVO CAMPO VAT FEE
     );
   }
 

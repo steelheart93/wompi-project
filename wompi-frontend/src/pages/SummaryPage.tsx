@@ -19,6 +19,11 @@ export const SummaryPage = () => {
 
   if (!product) return null;
 
+  // CÁLCULOS DEL IVA
+  const productPrice = product.price; // En centavos
+  const vatFee = Math.round(productPrice * 0.19); // 19% de IVA
+  const total = productPrice + vatFee + DELIVERY_FEE * 100; // Todo en centavos
+
   const handlePayment = async () => {
     setProcessing(true);
     try {
@@ -28,6 +33,7 @@ export const SummaryPage = () => {
         paymentSourceId: cardToken,
         installments: 1,
         deliveryAddress: deliveryData.address,
+        vatFee: vatFee, // Enviamos el IVA calculado
       });
 
       dispatch(setTransactionSuccess(response.data.data));
@@ -47,16 +53,21 @@ export const SummaryPage = () => {
         <span>Producto</span>
         <span>${(product.price / 100).toLocaleString("es-CO")}</span>
       </div>
+      {/* NUEVA FILA PARA EL IVA */}
+      <div className="summary-item">
+        <span>IVA (19%)</span>
+        <span>${(vatFee / 100).toLocaleString("es-CO")}</span>
+      </div>
       <div className="summary-item">
         <span>Envío</span>
         <span>${DELIVERY_FEE.toLocaleString("es-CO")}</span>
       </div>
+
       <div className="summary-total">
-        <span>Total</span>
-        <span>
-          ${(product.price / 100 + DELIVERY_FEE).toLocaleString("es-CO")}
-        </span>
+        <span>Total a Pagar</span>
+        <span>${(total / 100).toLocaleString("es-CO")}</span>
       </div>
+
       <div style={{ marginTop: "20px", fontSize: "0.9rem", color: "#666" }}>
         <p>Entregar a: {deliveryData.email}</p>
         <p>Dirección: {deliveryData.address}</p>
