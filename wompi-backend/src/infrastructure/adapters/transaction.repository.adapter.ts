@@ -40,6 +40,7 @@ export class TransactionRepositoryAdapter implements ITransactionRepository {
         customer_email: transaction.customerEmail,
         status: transaction.status,
         created_at: transaction.createdAt,
+        vatFee: transaction.vatFee, // <--- NUEVO CAMPO VAT FEE
       });
       await this.typeOrmRepo.save(entity);
       return success(transaction);
